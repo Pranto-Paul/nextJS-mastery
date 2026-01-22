@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 
-const NoteClient = () => {
+const NoteClient = ({ intialNotes }) => {
+  const [notes, setNotes] = useState(intialNotes);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,9 @@ const NoteClient = () => {
         body: JSON.stringify({ title, content }),
       });
       const result = await response.json();
-      console.log(result);
+      if (result.success) {
+        setNotes([result.data, ...notes]);
+      }
       setTitle('');
       setContent('');
     } catch (error) {
@@ -51,6 +54,45 @@ const NoteClient = () => {
           </button>
         </div>
       </form>
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">Your notes ({notes.length})</h2>
+        {notes.length === 0 ? (
+          <p className="text-gray-500 text-center mt-4">
+            No notes yet! Create your first note
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {notes.map((note) => (
+              <div
+                key={note._id}
+                className="border rounded-lg p-4 shadow-sm  space-y-2"
+              >
+                <h3 className="text-lg font-semibold text-white">
+                  {note.title}
+                </h3>
+                <p className="text-white">{note.content}</p>
+                <p className="text-sm text-gray-400">
+                  Last updated: {new Date(note.updatedAt).toLocaleString()}
+                </p>
+                <div className="flex flex-row-reverse gap-3">
+                  <button
+                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    onClick={() => handleUpdate(note._id)}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    onClick={() => handleDelete(note._id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
