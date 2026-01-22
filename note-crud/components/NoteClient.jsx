@@ -29,6 +29,19 @@ const NoteClient = ({ intialNotes }) => {
       setLoading(false);
     }
   };
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/api/notes/${id}`, {
+        method: 'DELETE',
+      });
+      const result = await response.json();
+      if (result.success) {
+        setNotes(notes.filter((note) => note._id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting note:', error);
+    }
+  };
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4 p-4 ">
