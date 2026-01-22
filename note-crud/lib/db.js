@@ -10,6 +10,6 @@ export default async function dbConnect() {
       console.log('✅Connected to DB');
     }
   } catch (error) {
-    console.error('❌Can not connect to DB');
+    console.error('❌Can not connect to DB: ', error);
   }
 }
